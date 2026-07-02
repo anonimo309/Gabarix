@@ -1,0 +1,636 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gabarix Gabaritu IA para OAB</title>
+  <link href="https://fonts.googleapis.com/css2?family=Gabarito:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange:  #E85B0A;
+      --orange2: #FF7A2F;
+      --black:   #111111;
+      --surface: #1C1C1C;
+      --border:  rgba(255,255,255,0.08);
+      --white:   #FFFFFF;
+      --gray:    #888888;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── GLOW BG ── */
+    .glow {
+      position: fixed; pointer-events: none; z-index: 0;
+      border-radius: 50%; filter: blur(140px); opacity: 0.12;
+    }
+    .glow-1 { width: 700px; height: 700px; background: var(--orange); top: -250px; left: -200px; }
+    .glow-2 { width: 500px; height: 500px; background: var(--orange2); bottom: -150px; right: -150px; opacity: 0.08; }
+
+    /* ── HEADER ── */
+    header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(17,17,17,0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(232,91,10,0.2);
+      height: 68px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .header-inner {
+      width: 100%; max-width: 900px;
+      padding: 0 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: relative;
+    }
+    .header-left {
+      display: flex; align-items: center;
+    }
+    .header-center {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex; align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+    .header-symbol {
+      height: 56px;
+      width: auto;
+      object-fit: contain;
+      max-width: 90px;
+    }
+    .header-logo {
+      display: block;
+      height: 36px;
+      width: auto;
+      max-width: 180px;
+      object-fit: contain;
+      pointer-events: auto;
+    }
+    .header-brand {
+      font-family: 'Gabarito', sans-serif;
+      font-size: 1.4rem; letter-spacing: 0.1em;
+      color: var(--white);
+    }
+    .header-brand span { color: var(--orange); }
+    .header-badge {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--orange2);
+      background: rgba(232,91,10,0.12);
+      border: 1px solid rgba(232,91,10,0.3);
+      border-radius: 999px;
+      padding: 5px 14px;
+    }
+
+    /* ── WRAPPER ── */
+    .page {
+      position: relative; z-index: 1;
+      max-width: 760px; margin: 0 auto;
+      padding: 0 24px 80px;
+      display: flex; flex-direction: column; align-items: center; gap: 56px;
+      text-align: center;
+    }
+
+    /* ── BADGE ── */
+    .badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(232,91,10,0.12);
+      border: 1px solid rgba(232,91,10,0.35);
+      border-radius: 999px;
+      padding: 7px 18px;
+      font-size: 12px; font-weight: 600; letter-spacing: 0.08em;
+      color: var(--orange2); text-transform: uppercase;
+    }
+    .badge .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--orange2);
+      animation: blink 1.4s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:.2;} }
+
+    .error-msg {
+      display: none;
+      width: min(100%, 860px);
+      margin: 0 auto;
+      padding: 14px 18px;
+      color: #ffb3a0;
+      background: rgba(232, 91, 10, 0.12);
+      border: 1px solid rgba(232, 91, 10, 0.35);
+      border-radius: 12px;
+      font-size: 0.95rem;
+      text-align: center;
+    }
+
+    /* ── HEADLINE ── */
+    .headline {
+      position: relative; z-index: 1;
+      width: clamp(320px, 96vw, 1040px);
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 120px 46px 36px;
+      display: flex; flex-direction: column; align-items: center; gap: 18px;
+      text-align: center;
+      background: transparent;
+      border: none;
+      border-radius: 24px;
+    }
+    .eyebrow {
+      font-size: 13px; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--gray);
+    }
+    h1 {
+      font-family: 'Gabarito', sans-serif;
+      font-size: clamp(3rem, 10vw, 5.5rem);
+      line-height: 1;
+      letter-spacing: 0.02em;
+      max-width: 980px;
+      width: 100%;
+    }
+    .h1-white { color: var(--white); }
+    .h1-orange { color: var(--orange); -webkit-text-stroke: 1px var(--orange2); }
+    .sub {
+      font-size: clamp(1rem, 2.5vw, 1.15rem);
+      color: #aaa; max-width: 580px; line-height: 1.75; margin: 0 auto;
+    }
+    .sub strong { color: var(--white); }
+
+    /* ── DIVIDER ── */
+    .divider {
+      width: 60px; height: 3px;
+      background: linear-gradient(90deg, var(--orange), var(--orange2));
+      border-radius: 2px;
+    }
+
+    /* ── PARA QUEM É ── */
+    .for-you {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: 2px solid var(--orange);
+      border-radius: 16px;
+      padding: 32px 28px; width: 100%; text-align: left;
+    }
+    .for-you h2 {
+      font-family: 'Gabarito', sans-serif;
+      font-size: 1.4rem; letter-spacing: 0.06em;
+      color: var(--orange2); margin-bottom: 20px;
+    }
+    .pain-list { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+    .pain-list li {
+      display: flex; align-items: flex-start; gap: 12px;
+      font-size: 15px; color: #ccc; line-height: 1.6;
+    }
+    .pain-list li .icon {
+      flex-shrink: 0; width: 22px; height: 22px;
+      background: rgba(232,91,10,0.15);
+      border: 1px solid rgba(232,91,10,0.35);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; margin-top: 1px;
+    }
+
+    /* ── SOBRE ── */
+    .about { width: 100%; display: flex; flex-direction: column; gap: 16px; text-align: left; }
+    .about-label {
+      font-size: 12px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--orange2);
+    }
+    .about p { font-size: 15px; color: #bbb; line-height: 1.75; }
+    .about p strong { color: var(--white); }
+
+    /* ── CARDS ── */
+    .cards {
+      width: 100%;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px;
+    }
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 22px 20px; text-align: left;
+      transition: border-color 0.2s;
+    }
+    .card:hover { border-color: rgba(232,91,10,0.4); }
+    .card-icon { font-size: 1.5rem; margin-bottom: 10px; }
+    .card h3 { font-size: 14px; font-weight: 700; margin-bottom: 5px; color: var(--white); }
+    .card p { font-size: 13px; color: var(--gray); line-height: 1.55; }
+
+    /* ── QUEM FEZ ── */
+    .made-by {
+      width: 100%;
+      background: linear-gradient(135deg, rgba(232,91,10,0.08), rgba(232,91,10,0.03));
+      border: 1px solid rgba(232,91,10,0.2); border-radius: 16px; padding: 28px; text-align: left;
+    }
+    .made-by h2 {
+      font-family: 'Gabarito', sans-serif;
+      font-size: 1.3rem; letter-spacing: 0.06em;
+      color: var(--orange2); margin-bottom: 12px;
+    }
+    .made-by p { font-size: 14px; color: #bbb; line-height: 1.75; }
+    .made-by p strong { color: var(--white); }
+
+    /* ── COUNTDOWN ── */
+    .countdown-section { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .countdown-title {
+      font-size: 12px; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--gray);
+    }
+    .countdown { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+    .unit { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .num {
+      font-family: 'Gabarito', sans-serif;
+      font-size: clamp(2.2rem, 9vw, 3.8rem);
+      width: 88px; height: 88px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--surface); border: 1px solid var(--border);
+      border-bottom: 2px solid var(--orange); border-radius: 12px;
+      letter-spacing: 0.04em;
+    }
+    .unit-name { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray); }
+    .sep {
+      font-family: 'Gabarito', sans-serif; font-size: 3rem;
+      color: rgba(255,255,255,0.15); align-self: flex-start; margin-top: 18px;
+    }
+
+    /* ── PROGRESS ── */
+    .progress-wrap { width: 100%; max-width: 500px; }
+    .progress-info {
+      display: flex; justify-content: space-between;
+      font-size: 13px; color: var(--gray); margin-bottom: 10px;
+    }
+    .progress-info span:first-child { color: var(--white); font-weight: 600; }
+    .progress-bar { height: 5px; background: rgba(255,255,255,0.06); border-radius: 999px; overflow: hidden; }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--orange), var(--orange2));
+      border-radius: 999px; width: 0%; transition: width 1.4s cubic-bezier(.22,1,.36,1);
+    }
+
+    /* ── FORM ── */
+    .form-section { width: 100%; max-width: 500px; }
+    .form-label { font-size: 13px; color: var(--gray); margin-bottom: 14px; }
+    .form-fields { display: flex; flex-direction: column; gap: 12px; }
+    .field-wrap { position: relative; }
+    .field-wrap .field-icon {
+      position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+      font-size: 16px; pointer-events: none;
+    }
+    .field-wrap input {
+      width: 100%;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 14px 18px 14px 44px; color: var(--white);
+      font-size: 15px; font-family: 'Inter', sans-serif;
+      outline: none; transition: border-color 0.2s;
+    }
+    .field-wrap input::placeholder { color: #444; }
+    .field-wrap input:focus { border-color: var(--orange); }
+    .btn-cta {
+      width: 100%;
+      background: linear-gradient(135deg, var(--orange), var(--orange2));
+      color: var(--white); border: none; border-radius: 10px;
+      padding: 15px 22px; font-size: 15px; font-weight: 700;
+      font-family: 'Inter', sans-serif; cursor: pointer;
+      letter-spacing: 0.02em;
+      transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 24px rgba(232,91,10,0.3);
+      margin-top: 4px;
+    }
+    .btn-cta:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 8px 32px rgba(232,91,10,0.45); }
+    .btn-cta:active { transform: translateY(0); }
+    .success-msg {
+      display: none;
+      background: rgba(232,91,10,0.1); border: 1px solid rgba(232,91,10,0.3);
+      border-radius: 10px; padding: 14px 18px; color: var(--orange2);
+      font-size: 14px; margin-top: 12px;
+    }
+    .privacy { font-size: 11px; color: #444; margin-top: 10px; }
+
+    /* ── FOOTER ── */
+    footer {
+      font-size: 12px; color: #333;
+      border-top: 1px solid var(--border);
+      padding-top: 24px; width: 100%; text-align: center;
+    }
+
+    /* ── TABLET (max 768px) ── */
+    @media (max-width: 768px) {
+      .page { padding: 100px 20px 60px; gap: 40px; }
+      .cards { grid-template-columns: 1fr 1fr; }
+      .header-inner { padding: 0 16px; }
+      .num { width: 78px; height: 78px; }
+    }
+
+    /* ── MOBILE (max 480px) ── */
+    @media (max-width: 480px) {
+      header { height: 58px; }
+      .header-brand { font-size: 1.15rem; }
+      .header-badge { display: none; }
+
+      .page { padding: 86px 16px 50px; gap: 32px; }
+
+      h1 { font-size: 2.6rem; }
+      .sub { font-size: 0.97rem; }
+
+      .sep { display: none; }
+      .countdown { gap: 8px; }
+      .num { width: 68px; height: 68px; font-size: 1.9rem; border-radius: 8px; }
+      .unit-name { font-size: 9px; }
+
+      .cards { grid-template-columns: 1fr; gap: 10px; }
+      .card { padding: 18px 16px; }
+
+      .for-you  { padding: 20px 16px; }
+      .made-by  { padding: 20px 16px; }
+      .for-you h2, .made-by h2 { font-size: 1.15rem; }
+      .pain-list li { font-size: 14px; }
+
+      .about p { font-size: 14px; }
+      .progress-info { font-size: 12px; }
+
+      .form-section { max-width: 100%; }
+      .form-label { font-size: 12px; }
+      .field-wrap input { font-size: 16px; padding: 13px 16px 13px 42px; }
+      .btn-cta { font-size: 15px; padding: 15px; }
+
+      footer { font-size: 11px; }
+    }
+
+    /* ── MOBILE PEQUENO (max 360px) ── */
+    @media (max-width: 360px) {
+      h1 { font-size: 2.1rem; }
+      .num { width: 58px; height: 58px; font-size: 1.6rem; }
+      .page { padding: 80px 12px 40px; gap: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
+
+  <!-- ── CABEÇALHO FIXO ── -->
+  <header>
+    <div class="header-inner">
+      <div class="header-left">
+        <img src="IMG/Logo%20do%20site.png" alt="Gabarix símbolo" class="header-symbol" />
+      </div>
+      <div class="header-center">
+        <img src="IMG/Gabrix.png" alt="Gabarix" class="header-logo" />
+      </div>
+      <span class="header-badge">Em breve</span>
+    </div>
+  </header>
+
+  <div class="headline">
+    <p class="eyebrow">Para quem quer passar na OAB de vez</p>
+    <h1>
+      <span class="h1-white">Chega de estudar sozinho<br>sem resultado.</span>
+      <br>
+      <span class="h1-orange">Conheça o Gabaritu</span>
+    </h1>
+    <p class="sub">
+      A <strong>IA da Gabarix</strong> que traça o caminho definitivo para você passar na prova da OAB
+      desenvolvida por <strong>advogados da Ordem em Fortaleza</strong> e refinada por professores que formam grandes profissionais do Direito.
+    </p>
+  </div>
+
+  <div class="page">
+
+    <div class="badge">
+      <span class="dot"></span>
+      Em breve acesso antecipado
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="for-you">
+      <h2>📌 Isso é para você se…</h2>
+      <ul class="pain-list">
+        <li><span class="icon">✗</span>Você estuda horas e horas mas na hora da prova a ficha não cai</li>
+        <li><span class="icon">✗</span>Já tentou a OAB mais de uma vez e não sabe onde está errando</li>
+        <li><span class="icon">✗</span>Está cansado de estudar sozinho, sem direção, sem saber o que priorizar</li>
+        <li><span class="icon">✗</span>Quer se tornar o profissional do Direito que sempre sonhou, mas o exame ainda barra o caminho</li>
+      </ul>
+    </div>
+
+    <div class="about">
+      <span class="about-label">O que é o Gabaritu</span>
+      <p>O <strong>Gabaritu</strong> é a inteligência artificial da Gabarix criada para ser o seu guia de estudos personalizado para a OAB. Ele analisa seu perfil, identifica seus pontos fracos e te diz exatamente <strong>o que estudar, na ordem certa, no momento certo</strong> eliminando o desperdício de tempo com conteúdos que não vão cair.</p>
+      <p>Desenvolvido por <strong>advogados ativos da OAB Ceará</strong>, em Fortaleza, que conhecem o exame por dentro e ajustado por professores especializados na aprovação de futuros profissionais do Direito.</p>
+    </div>
+
+    <div class="cards">
+      <div class="card"><div class="card-icon">🧠</div><h3>Caminho personalizado</h3><p>A IA monta seu plano de estudos com base no seu diagnóstico.</p></div>
+      <div class="card"><div class="card-icon">⚖️</div><h3>Feito por advogados</h3><p>Quem criou passou pela OAB e sabe exatamente o que a banca quer.</p></div>
+      <div class="card"><div class="card-icon">🎯</div><h3>Foco no que cai</h3><p>Sem enrolação. Só o conteúdo que realmente aparece na prova.</p></div>
+      <div class="card"><div class="card-icon">🚀</div><h3>Resultado mais rápido</h3><p>Menos tempo de preparo, mais eficiência e mais aprovações.</p></div>
+    </div>
+
+    <div class="made-by">
+      <h2>🏛️ Feito por quem conhece o caminho</h2>
+      <p>O Gabaritu nasceu dentro da <strong>Gabarix Cursos Preparatórios</strong>, em Fortaleza CE. Nossa equipe é formada por <strong>advogados inscritos na OAB</strong> que viveram o processo de aprovação e entendem cada detalhe do exame, aliados a professores dedicados a transformar estudantes em profissionais de destaque no Direito brasileiro.</p>
+    </div>
+
+    <div class="countdown-section">
+      <p class="countdown-title">Lançamento em</p>
+      <div class="countdown">
+        <div class="unit"><div class="num" id="days">00</div><span class="unit-name">Dias</span></div>
+        <span class="sep">:</span>
+        <div class="unit"><div class="num" id="hours">00</div><span class="unit-name">Horas</span></div>
+        <span class="sep">:</span>
+        <div class="unit"><div class="num" id="minutes">00</div><span class="unit-name">Min</span></div>
+        <span class="sep">:</span>
+        <div class="unit"><div class="num" id="seconds">00</div><span class="unit-name">Seg</span></div>
+      </div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-info">
+        <span>🔥 <span id="count">312</span> pessoas na pré-lista</span>
+        <span id="ppct"></span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="pfill"></div></div>
+    </div>
+
+    <div class="form-section">
+      <p class="form-label">Preencha seus dados para garantir sua vaga na pré-lista</p>
+      <!-- Formulário integrado ao Google Forms: ação e campos configurados -->
+      <form id="prelistForm" class="form-fields" onsubmit="return submitForm(event)">
+        <div class="field-wrap">
+          <span class="field-icon">👤</span>
+          <input type="text" id="nameInput" name="entry.969789131" placeholder="Seu nome completo" />
+        </div>
+        <div class="field-wrap">
+          <span class="field-icon">📱</span>
+          <input type="tel" id="whatsInput" name="entry.2068306913" placeholder="+55 85 9 0000-0000" maxlength="20" />
+        </div>
+        <button class="btn-cta" type="submit">Quero entrar na pré-lista</button>
+      </form>
+      <div class="error-msg" id="errorMsg"></div>
+      <div class="success-msg" id="successMsg">✅ Vaga garantida! Em breve entraremos em contato pelo seu WhatsApp.</div>
+      <p class="privacy">🔒 Seus dados estão seguros. Não compartilhamos com terceiros.</p>
+    </div>
+
+    <footer>© 2025 Gabarix Cursos Preparatórios Fortaleza, CE &nbsp;|&nbsp; Todos os direitos reservados</footer>
+  </div>
+
+  <script>
+    // ── COUNTDOWN ──
+    const launch = new Date(Date.now() + 45 * 24 * 60 * 60 * 1000);
+    function pad(n) { return String(n).padStart(2,'0'); }
+    function tick() {
+      const d = launch - Date.now();
+      if (d <= 0) return;
+      document.getElementById('days').textContent    = pad(Math.floor(d / 86400000));
+      document.getElementById('hours').textContent   = pad(Math.floor((d % 86400000) / 3600000));
+      document.getElementById('minutes').textContent = pad(Math.floor((d % 3600000) / 60000));
+      document.getElementById('seconds').textContent = pad(Math.floor((d % 60000) / 1000));
+    }
+    tick(); setInterval(tick, 1000);
+
+    // ── PROGRESS ──
+    const total = 500;
+    let count = 312;
+    function updateProgress() {
+      const pct = Math.min(Math.round((count / total) * 100), 100);
+      document.getElementById('pfill').style.width = pct + '%';
+      document.getElementById('ppct').textContent  = pct + '% da meta';
+      document.getElementById('count').textContent = count;
+    }
+    setTimeout(updateProgress, 400);
+    setInterval(() => { count += Math.floor(Math.random() * 2) + 1; updateProgress(); }, 9000);
+
+    // ── MÁSCARA WHATSAPP ──
+    const whatsInput = document.getElementById('whatsInput');
+    whatsInput.addEventListener('input', function() {
+      const digits = this.value.replace(/\D/g, '').slice(0, 14);
+      // Formatar números longos com código do país + DDD + número (ex: 55 85 9 96992835)
+      if (digits.length >= 13) {
+        const countryLen = digits.length - 11; // country code pode ter 1-3 dígitos
+        const country = digits.slice(0, countryLen);
+        const ddd = digits.slice(countryLen, countryLen + 2);
+        const rest = digits.slice(countryLen + 2); // restante do número (8-9 dígitos)
+        this.value = country + ' ' + ddd + ' ' + rest[0] + ' ' + rest.slice(1);
+        return;
+      }
+      // Formatos menores (sem country code longo)
+      let v = digits;
+      if (v.length > 6) {
+        v = v.replace(/^(\d{2})(\d{4})(\d{0,4})$/, '($1) $2-$3');
+      } else if (v.length > 2) {
+        v = v.replace(/^(\d{2})(\d{0,5})$/, '($1) $2');
+      } else {
+        v = v.replace(/^(\d*)$/, '($1');
+      }
+      this.value = v;
+    });
+
+    // ── FORM ──
+    function validatePhone(value) {
+      const digits = value.replace(/\D/g, '');
+      if (digits.length < 13) {
+        return 'Informe código do país, DDD e número corretamente (ex: 55 85 9 96992835).';
+      }
+      if (digits.length > 14) {
+        return 'Número muito longo. Verifique o país, DDD e número.';
+      }
+      if (!/^(\d{1,3})(\d{2})(\d{8,9})$/.test(digits)) {
+        return 'Informe código do país, DDD e número corretamente.';
+      }
+      return '';
+    }
+
+    function submitForm(event) {
+      const form  = document.getElementById('prelistForm');
+      const name  = document.getElementById('nameInput');
+      const whats = document.getElementById('whatsInput');
+      const msg   = document.getElementById('successMsg');
+      const error = document.getElementById('errorMsg');
+
+      const nameValue = name.value.trim();
+      const phoneValue = whats.value.trim();
+      let valid = true;
+      error.style.display = 'none';
+      error.textContent = '';
+      msg.style.display = 'none';
+
+      if (!nameValue || nameValue.length < 3) {
+        name.style.borderColor = '#E85B0A'; name.focus(); valid = false;
+      } else { name.style.borderColor = ''; }
+
+      const phoneError = validatePhone(phoneValue);
+      if (phoneError) {
+        whats.style.borderColor = '#E85B0A'; if (valid) { whats.focus(); } valid = false;
+        error.textContent = phoneError;
+        error.style.display = 'block';
+      } else {
+        whats.style.borderColor = '';
+      }
+
+      if (!valid) {
+        if (!error.textContent) {
+          error.textContent = 'Por favor preencha todos os campos corretamente.';
+          error.style.display = 'block';
+        }
+        if (event && event.type === 'submit') {
+          event.preventDefault();
+        }
+        return false;
+      }
+
+      // Preparar dados a serem enviados ao Google Forms (silenciosamente via fetch)
+      const cleanName = name.value.trim();
+      const cleanPhoneDigits = whats.value.replace(/\D/g, '');
+
+      // Mostrar mensagem de sucesso
+      msg.style.display = 'block';
+      count += 1; updateProgress();
+
+      // Enviar dados silenciosamente para o Google Forms via fetch
+      const formData = new FormData();
+      formData.append('entry.969789131', cleanName);
+      formData.append('entry.2068306913', cleanPhoneDigits);
+
+      // Usar fetch com no-cors para não causar redirecionamento
+      fetch('https://docs.google.com/forms/d/e/1FAIpQLScuB33sfEe6uoERhf8WJszJLALj7duZxWAtmAn6uAcixmoEGQ/formResponse', {
+        method: 'POST',
+        body: formData,
+        mode: 'no-cors'
+      }).catch(() => {
+        // Ignorar erros CORS - o Google Forms ainda registra a resposta
+      });
+
+      // Redirecionar para página de obrigado após envio (sem aguardar resposta do Forms)
+      setTimeout(() => {
+        window.location.href = 'gabarix-obrigado.html';
+      }, 500);
+
+      if (event && event.type === 'submit') {
+        event.preventDefault();
+      }
+      return false;
+    }
+
+    document.getElementById('whatsInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        submitForm();
+      }
+    });
+    document.getElementById('nameInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        submitForm();
+      }
+    });
+  </script>
+</body>
+</html>
+
