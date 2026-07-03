@@ -487,11 +487,22 @@
     function pad(n) { return String(n).padStart(2,'0'); }
     function tick() {
       const d = launch - Date.now();
-      if (d <= 0) return;
-      document.getElementById('days').textContent    = pad(Math.floor(d / 86400000));
-      document.getElementById('hours').textContent   = pad(Math.floor((d % 86400000) / 3600000));
-      document.getElementById('minutes').textContent = pad(Math.floor((d % 3600000) / 60000));
-      document.getElementById('seconds').textContent = pad(Math.floor((d % 60000) / 1000));
+      const daysEl    = document.getElementById('days');
+      const hoursEl   = document.getElementById('hours');
+      const minutesEl = document.getElementById('minutes');
+      const secondsEl = document.getElementById('seconds');
+      if (!daysEl || !hoursEl || !minutesEl || !secondsEl) return;
+      if (d <= 0) {
+        daysEl.textContent = '00';
+        hoursEl.textContent = '00';
+        minutesEl.textContent = '00';
+        secondsEl.textContent = '00';
+        return;
+      }
+      daysEl.textContent    = pad(Math.floor(d / 86400000));
+      hoursEl.textContent   = pad(Math.floor((d % 86400000) / 3600000));
+      minutesEl.textContent = pad(Math.floor((d % 3600000) / 60000));
+      secondsEl.textContent = pad(Math.floor((d % 60000) / 1000));
     }
     tick(); setInterval(tick, 1000);
 
@@ -499,10 +510,14 @@
     const total = 500;
     let count = 312;
     function updateProgress() {
+      if (count > total) count = total;
       const pct = Math.min(Math.round((count / total) * 100), 100);
-      document.getElementById('pfill').style.width = pct + '%';
-      document.getElementById('ppct').textContent  = pct + '% da meta';
-      document.getElementById('count').textContent = count;
+      const pfill = document.getElementById('pfill');
+      const ppct  = document.getElementById('ppct');
+      const countEl = document.getElementById('count');
+      if (pfill)   pfill.style.width = pct + '%';
+      if (ppct)    ppct.textContent  = pct + '% da meta';
+      if (countEl) countEl.textContent = count;
     }
     setTimeout(updateProgress, 400);
     setInterval(() => { count += Math.floor(Math.random() * 2) + 1; updateProgress(); }, 9000);
@@ -598,19 +613,19 @@
       formData.append('entry.969789131', cleanName);
       formData.append('entry.2068306913', cleanPhoneDigits);
 
-      // Usar fetch com no-cors para não causar redirecionamento
+      // Enviar ao Google Forms via no-cors e redirecionar ao concluir
       fetch('https://docs.google.com/forms/d/e/1FAIpQLScuB33sfEe6uoERhf8WJszJLALj7duZxWAtmAn6uAcixmoEGQ/formResponse', {
         method: 'POST',
         body: formData,
         mode: 'no-cors'
-      }).catch(() => {
-        // Ignorar erros CORS - o Google Forms ainda registra a resposta
-      });
-
-      // Redirecionar para página de obrigado após envio (sem aguardar resposta do Forms)
-      setTimeout(() => {
+      }).then(() => {
         window.location.href = 'gabarix-obrigado.html';
-      }, 500);
+      }).catch(function(err) {
+        console.error('Erro ao enviar formulário:', err);
+        error.textContent = 'Erro ao enviar seus dados. Verifique sua conexão e tente novamente.';
+        error.style.display = 'block';
+        msg.style.display = 'none';
+      });
 
       if (event && event.type === 'submit') {
         event.preventDefault();
