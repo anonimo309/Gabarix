@@ -1,137 +1,12 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gabarix Gabaritu IA para OAB</title>
   <link href="https://fonts.googleapis.com/css2?family=Gabarito:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/shared.css" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --orange:  #E85B0A;
-      --orange2: #FF7A2F;
-      --black:   #111111;
-      --surface: #1C1C1C;
-      --border:  rgba(255,255,255,0.08);
-      --white:   #FFFFFF;
-      --gray:    #888888;
-    }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--black);
-      color: var(--white);
-      font-family: 'Inter', sans-serif;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    /* ── GLOW BG ── */
-    .glow {
-      position: fixed; pointer-events: none; z-index: 0;
-      border-radius: 50%; filter: blur(140px); opacity: 0.12;
-    }
-    .glow-1 { width: 700px; height: 700px; background: var(--orange); top: -250px; left: -200px; }
-    .glow-2 { width: 500px; height: 500px; background: var(--orange2); bottom: -150px; right: -150px; opacity: 0.08; }
-
-    /* ── HEADER ── */
-    header {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      background: rgba(17,17,17,0.85);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid rgba(232,91,10,0.2);
-      height: 68px;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .header-inner {
-      width: 100%; max-width: 900px;
-      padding: 0 24px;
-      display: flex; align-items: center; justify-content: space-between;
-      position: relative;
-    }
-    .header-left {
-      display: flex; align-items: center;
-    }
-    .header-center {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex; align-items: center;
-      justify-content: center;
-      pointer-events: none;
-    }
-    .header-symbol {
-      height: 56px;
-      width: auto;
-      object-fit: contain;
-      max-width: 90px;
-    }
-    .header-logo {
-      display: block;
-      height: 36px;
-      width: auto;
-      max-width: 180px;
-      object-fit: contain;
-      pointer-events: auto;
-    }
-    .header-brand {
-      font-family: 'Gabarito', sans-serif;
-      font-size: 1.4rem; letter-spacing: 0.1em;
-      color: var(--white);
-    }
-    .header-brand span { color: var(--orange); }
-    .header-badge {
-      font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--orange2);
-      background: rgba(232,91,10,0.12);
-      border: 1px solid rgba(232,91,10,0.3);
-      border-radius: 999px;
-      padding: 5px 14px;
-    }
-
-    /* ── WRAPPER ── */
-    .page {
-      position: relative; z-index: 1;
-      max-width: 760px; margin: 0 auto;
-      padding: 0 24px 80px;
-      display: flex; flex-direction: column; align-items: center; gap: 56px;
-      text-align: center;
-    }
-
-    /* ── BADGE ── */
-    .badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(232,91,10,0.12);
-      border: 1px solid rgba(232,91,10,0.35);
-      border-radius: 999px;
-      padding: 7px 18px;
-      font-size: 12px; font-weight: 600; letter-spacing: 0.08em;
-      color: var(--orange2); text-transform: uppercase;
-    }
-    .badge .dot {
-      width: 7px; height: 7px; border-radius: 50%;
-      background: var(--orange2);
-      animation: blink 1.4s ease-in-out infinite;
-    }
-    @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:.2;} }
-
-    .error-msg {
-      display: none;
-      width: min(100%, 860px);
-      margin: 0 auto;
-      padding: 14px 18px;
-      color: #ffb3a0;
-      background: rgba(232, 91, 10, 0.12);
-      border: 1px solid rgba(232, 91, 10, 0.35);
-      border-radius: 12px;
-      font-size: 0.95rem;
-      text-align: center;
-    }
-
     /* ── HEADLINE ── */
     .headline {
       position: relative; z-index: 1;
@@ -165,6 +40,39 @@
     }
     .sub strong { color: var(--white); }
 
+    /* ── PAGE (extends shared) ── */
+    .page {
+      max-width: 760px;
+      padding: 0 24px 80px;
+      gap: 56px;
+    }
+
+    /* ── BADGE (extends shared) ── */
+    .badge {
+      background: rgba(232,91,10,0.12);
+      border: 1px solid rgba(232,91,10,0.35);
+      color: var(--orange2);
+    }
+    .badge .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--orange2);
+      animation: blink 1.4s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:.2;} }
+
+    .error-msg {
+      display: none;
+      width: min(100%, 860px);
+      margin: 0 auto;
+      padding: 14px 18px;
+      color: #ffb3a0;
+      background: rgba(232, 91, 10, 0.12);
+      border: 1px solid rgba(232, 91, 10, 0.35);
+      border-radius: 12px;
+      font-size: 0.95rem;
+      text-align: center;
+    }
+
     /* ── DIVIDER ── */
     .divider {
       width: 60px; height: 3px;
@@ -172,7 +80,7 @@
       border-radius: 2px;
     }
 
-    /* ── PARA QUEM É ── */
+    /* ── PARA QUEM E ── */
     .for-you {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -313,26 +221,16 @@
     }
     .privacy { font-size: 11px; color: #444; margin-top: 10px; }
 
-    /* ── FOOTER ── */
-    footer {
-      font-size: 12px; color: #333;
-      border-top: 1px solid var(--border);
-      padding-top: 24px; width: 100%; text-align: center;
-    }
-
     /* ── TABLET (max 768px) ── */
     @media (max-width: 768px) {
       .page { padding: 100px 20px 60px; gap: 40px; }
       .cards { grid-template-columns: 1fr 1fr; }
-      .header-inner { padding: 0 16px; }
       .num { width: 78px; height: 78px; }
     }
 
     /* ── MOBILE (max 480px) ── */
     @media (max-width: 480px) {
-      header { height: 58px; }
       .header-brand { font-size: 1.15rem; }
-      .header-badge { display: none; }
 
       .page { padding: 86px 16px 50px; gap: 32px; }
 
@@ -359,8 +257,6 @@
       .form-label { font-size: 12px; }
       .field-wrap input { font-size: 16px; padding: 13px 16px 13px 42px; }
       .btn-cta { font-size: 15px; padding: 15px; }
-
-      footer { font-size: 11px; }
     }
 
     /* ── MOBILE PEQUENO (max 360px) ── */
@@ -375,7 +271,7 @@
   <div class="glow glow-1"></div>
   <div class="glow glow-2"></div>
 
-  <!-- ── CABEÇALHO FIXO ── -->
+  <!-- HEADER -->
   <header>
     <div class="header-inner">
       <div class="header-left">
@@ -461,7 +357,6 @@
 
     <div class="form-section">
       <p class="form-label">Preencha seus dados para garantir sua vaga na pré-lista</p>
-      <!-- Formulário integrado ao Google Forms: ação e campos configurados -->
       <form id="prelistForm" class="form-fields" onsubmit="return submitForm(event)">
         <div class="field-wrap">
           <span class="field-icon">👤</span>
@@ -481,10 +376,10 @@
     <footer>© 2025 Gabarix Cursos Preparatórios Fortaleza, CE &nbsp;|&nbsp; Todos os direitos reservados</footer>
   </div>
 
+  <script src="js/shared.js"></script>
   <script>
     // ── COUNTDOWN ──
     const launch = new Date(Date.now() + 45 * 24 * 60 * 60 * 1000);
-    function pad(n) { return String(n).padStart(2,'0'); }
     function tick() {
       const d = launch - Date.now();
       if (d <= 0) return;
@@ -507,20 +402,18 @@
     setTimeout(updateProgress, 400);
     setInterval(() => { count += Math.floor(Math.random() * 2) + 1; updateProgress(); }, 9000);
 
-    // ── MÁSCARA WHATSAPP ──
+    // ── WHATSAPP MASK ──
     const whatsInput = document.getElementById('whatsInput');
     whatsInput.addEventListener('input', function() {
       const digits = this.value.replace(/\D/g, '').slice(0, 14);
-      // Formatar números longos com código do país + DDD + número (ex: 55 85 9 96992835)
       if (digits.length >= 13) {
-        const countryLen = digits.length - 11; // country code pode ter 1-3 dígitos
+        const countryLen = digits.length - 11;
         const country = digits.slice(0, countryLen);
         const ddd = digits.slice(countryLen, countryLen + 2);
-        const rest = digits.slice(countryLen + 2); // restante do número (8-9 dígitos)
+        const rest = digits.slice(countryLen + 2);
         this.value = country + ' ' + ddd + ' ' + rest[0] + ' ' + rest.slice(1);
         return;
       }
-      // Formatos menores (sem country code longo)
       let v = digits;
       if (v.length > 6) {
         v = v.replace(/^(\d{2})(\d{4})(\d{0,4})$/, '($1) $2-$3');
@@ -585,29 +478,22 @@
         return false;
       }
 
-      // Preparar dados a serem enviados ao Google Forms (silenciosamente via fetch)
       const cleanName = name.value.trim();
       const cleanPhoneDigits = whats.value.replace(/\D/g, '');
 
-      // Mostrar mensagem de sucesso
       msg.style.display = 'block';
       count += 1; updateProgress();
 
-      // Enviar dados silenciosamente para o Google Forms via fetch
       const formData = new FormData();
       formData.append('entry.969789131', cleanName);
       formData.append('entry.2068306913', cleanPhoneDigits);
 
-      // Usar fetch com no-cors para não causar redirecionamento
       fetch('https://docs.google.com/forms/d/e/1FAIpQLScuB33sfEe6uoERhf8WJszJLALj7duZxWAtmAn6uAcixmoEGQ/formResponse', {
         method: 'POST',
         body: formData,
         mode: 'no-cors'
-      }).catch(() => {
-        // Ignorar erros CORS - o Google Forms ainda registra a resposta
-      });
+      }).catch(() => {});
 
-      // Redirecionar para página de obrigado após envio (sem aguardar resposta do Forms)
       setTimeout(() => {
         window.location.href = 'gabarix-obrigado.html';
       }, 500);
@@ -619,18 +505,11 @@
     }
 
     document.getElementById('whatsInput').addEventListener('keydown', e => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        submitForm();
-      }
+      if (e.key === 'Enter') { e.preventDefault(); submitForm(); }
     });
     document.getElementById('nameInput').addEventListener('keydown', e => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        submitForm();
-      }
+      if (e.key === 'Enter') { e.preventDefault(); submitForm(); }
     });
   </script>
 </body>
 </html>
-
