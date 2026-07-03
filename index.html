@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https://docs.google.com; frame-ancestors 'none';" />
   <title>Gabarix Gabaritu IA para OAB</title>
   <link href="https://fonts.googleapis.com/css2?family=Gabarito:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
@@ -465,7 +466,7 @@
       <form id="prelistForm" class="form-fields" onsubmit="return submitForm(event)">
         <div class="field-wrap">
           <span class="field-icon">👤</span>
-          <input type="text" id="nameInput" name="entry.969789131" placeholder="Seu nome completo" />
+          <input type="text" id="nameInput" name="entry.969789131" placeholder="Seu nome completo" maxlength="100" autocomplete="name" />
         </div>
         <div class="field-wrap">
           <span class="field-icon">📱</span>
@@ -561,8 +562,10 @@
       error.textContent = '';
       msg.style.display = 'none';
 
-      if (!nameValue || nameValue.length < 3) {
+      if (!nameValue || nameValue.length < 3 || !/^[\p{L}\s'.\-]+$/u.test(nameValue)) {
         name.style.borderColor = '#E85B0A'; name.focus(); valid = false;
+        error.textContent = 'Por favor informe um nome v\u00e1lido (apenas letras e espa\u00e7os).';
+        error.style.display = 'block';
       } else { name.style.borderColor = ''; }
 
       const phoneError = validatePhone(phoneValue);
